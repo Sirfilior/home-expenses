@@ -1,0 +1,42 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Expense {
+  id            Int         @id @default(autoincrement())
+  name          String
+  cost          Float
+  expenseType   ExpenseType @relation(fields: [expenseTypeId], references: [id])
+  expenseTypeId Int
+  active        Boolean     @default(true)
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int
+}
+
+model Payment {
+  id     Int      @id @default(autoincrement())
+  name   String
+  cost   Float
+  user   User     @relation(fields: [userId], references: [id])
+  userId Int
+  date   DateTime
+}
+
+model ExpenseType {
+  id      Int       @id @default(autoincrement())
+  name    String
+  Expense Expense[]
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  expenses Expense[]
+  salary   Float
+  payments Payment[]
+}
